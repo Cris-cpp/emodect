@@ -12,23 +12,28 @@ import soundfile as sf
 # Load the pre-trained emotion model
 def load_model():
     return joblib.load("random_forest.pkl")
+from transformers import AutoProcessor, AutoModelForSpeechSeq2Seq
+import torchaudio
+import librosa as lb
+import torch
 
-# Transcribe audio using Whisper
+# Transcribe audio using Whisper (local-only)
 def transcribe(file_path):
-    processor = AutoProcessor.from_pretrained("openai/whisper-small.en")
-    model = AutoModelForSpeechSeq2Seq.from_pretrained("openai/whisper-small.en")
+    processor = AutoProcessor.from_pretrained("openai/whisper-small.en", local_files_only=True)
+    model = AutoModelForSpeechSeq2Seq.from_pretrained("openai/whisper-small.en", local_files_only=True)
 
     audio_input, sample_rate = lb.load(file_path, sr=16000)
-    audio_input = audio_input.tolist()  # ✅ Avoid torch.from_numpy
 
     inputs = processor(audio_input, sampling_rate=sample_rate, return_tensors="pt")
-    input_features = inputs["input_features"].to(model.device)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
 
     with torch.no_grad():
-        predicted_ids = model.generate(input_features, max_length=448, num_beams=5)
+        generated_ids = model.generate(inputs.input_features.to(device))
+        transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
 
-    transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
-    return transcription[0]
+    return transcription
 
 # Extract MFCC features for emotion prediction
 def extract_features(audio_path):
