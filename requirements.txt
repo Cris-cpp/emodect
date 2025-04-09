@@ -101,7 +101,7 @@ scikit-learn==1.6.1
 scipy==1.15.2
 seaborn==0.13.2
 Send2Trash==1.8.3
-pyaudio==0.2.13
+pyaudio
 
 setuptools==76.0.0
 six==1.17.0
