@@ -19,18 +19,31 @@ import torch
 
 # Transcribe audio using Whisper (local-only)
 def transcribe(file_path):
-    local_model_path = "./whisper-small.en"  # or wherever you extracted the folder
-    processor = AutoProcessor.from_pretrained(local_model_path)
-    model = AutoModelForSpeechSeq2Seq.from_pretrained(local_model_path)
+    from transformers import AutoProcessor, AutoModelForSpeechSeq2Seq
+    import torch
+    import librosa as lb
 
-    # rest of your code...
+    # Path to locally saved model directory
+    local_model_path = "whisper-small.en"
 
+    # Load processor and model locally
+    processor = AutoProcessor.from_pretrained(local_model_path, local_files_only=True)
+    model = AutoModelForSpeechSeq2Seq.from_pretrained(local_model_path, local_files_only=True)
+
+    # Load audio and prepare inputs
     audio_input, sample_rate = lb.load(file_path, sr=16000)
-
     inputs = processor(audio_input, sampling_rate=sample_rate, return_tensors="pt")
 
+    # Move model to appropriate device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
+
+    # Generate transcription
+    with torch.no_grad():
+        generated_ids = model.generate(inputs.input_features.to(device))
+        transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+
+    return transcription
 
     with torch.no_grad():
         generated_ids = model.generate(inputs.input_features.to(device))
