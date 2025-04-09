@@ -17,10 +17,14 @@ def load_model():
 def transcribe(file_path):
     processor = AutoProcessor.from_pretrained("openai/whisper-small.en")
     model = AutoModelForSpeechSeq2Seq.from_pretrained("openai/whisper-small.en")
+
     audio_input, sample_rate = lb.load(file_path, sr=16000)
+    audio_input = np.array(audio_input)  # ✅ Ensures it's a NumPy array
+
     inputs = processor(audio_input, sampling_rate=sample_rate, return_tensors="pt")
     with torch.no_grad():
         predicted_ids = model.generate(inputs["input_features"], max_length=448, num_beams=5)
+
     transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
     return transcription[0]
 
