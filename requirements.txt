@@ -120,3 +120,17 @@ wcwidth==0.2.13
 webcolors==24.11.1
 webencodings==0.5.1
 websocket-client==1.8.0
+ipython==8.12.3
+joblib==1.4.2
+kagglehub==0.3.11
+librosa==0.11.0
+noisereduce==3.0.3
+numpy==2.2.4
+pandas==2.2.3
+scikit_learn==1.6.1
+scipy==1.15.2
+sounddevice==0.5.1
+streamlit==1.44.1
+torch==2.6.0
+transformers==4.51.1
+
