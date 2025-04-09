@@ -19,8 +19,11 @@ import torch
 
 # Transcribe audio using Whisper (local-only)
 def transcribe(file_path):
-    processor = AutoProcessor.from_pretrained("openai/whisper-small.en", local_files_only=True)
-    model = AutoModelForSpeechSeq2Seq.from_pretrained("openai/whisper-small.en", local_files_only=True)
+    local_model_path = "./whisper-small.en"  # or wherever you extracted the folder
+    processor = AutoProcessor.from_pretrained(local_model_path)
+    model = AutoModelForSpeechSeq2Seq.from_pretrained(local_model_path)
+
+    # rest of your code...
 
     audio_input, sample_rate = lb.load(file_path, sr=16000)
 
