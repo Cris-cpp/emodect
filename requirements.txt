@@ -11,6 +11,7 @@ scikit-learn==1.6.1
 sympy==1.13.1
 networkx==3.3
 
+torchaudio
 # ───────────────────────────── Audio Processing ─────────────────────────────
 librosa==0.11.0
 noisereduce==3.0.3
