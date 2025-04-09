@@ -126,3 +126,10 @@ wcwidth==0.2.13
 webcolors==24.11.1
 webencodings==0.5.1
 websocket-client==1.8.0
+
+sounddevice==0.5.1
+librosa==0.11.0
+noisereduce==3.0.3
+streamlit==1.44.1
+transformers==4.51.1
+torch==2.2.2
